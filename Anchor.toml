@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-sol_overlaunch = "9uPQEcvmrkY4UvpGTsiqijFDoCqHSTrwMemW9FJFY4AD"
+sol_overlaunch = "8BxFXbfwnVWafHev8SBgzdipFXTxieFuaWmBqYgjVDee"
 
 [registry]
 url = "https://api.apr.dev"

@@ -3,7 +3,7 @@ use crate::{state::PayrollError, state::Multisig};
 
 #[derive(Accounts)]
 #[instruction(signers: Vec<Pubkey>, threshold: u8, office_id: String)]
-pub struct CreateMultisig<'info> {
+pub struct CreateProposal<'info> {
     #[account(
         init,
         seeds = [b"multisig", office_id.as_bytes()],
@@ -17,15 +17,15 @@ pub struct CreateMultisig<'info> {
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> CreateMultisig<'info> {
+impl<'info> CreateProposal<'info> {
     pub fn handler(
-        ctx: Context<CreateMultisig>,
+        ctx: Context<CreateProposal>,
         signers: Vec<Pubkey>,
         threshold: u8,
         office_id: String,
     ) -> Result<()> {
-        require!(signers.len() > 0, PayrollError::NoSigner);
-        require!(threshold > 0 && threshold <= signers.len() as u8, PayrollError::InvalidThreshold);
+        require!(signers.len() > 0, PayrollError::NotEnoughSigners);
+        require!(threshold > 0 && threshold <= signers.len() as u8, PayrollError::NotEnoughApproval);
 
         let multisig = &mut ctx.accounts.multisig;
         multisig.signers = signers;

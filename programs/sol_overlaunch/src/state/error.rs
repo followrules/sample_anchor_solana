@@ -12,18 +12,42 @@ pub enum CustomError {
 
 #[error_code]
 pub enum PayrollError {
-    #[msg("Already executed!")]
-    AlreadyExecuted,
-    #[msg("Not enough approval!")]
-    NotEnoughSigners,
-    #[msg("Already approved!")]
+    #[msg("Invalid signer")]
+    InvalidSigner,
+    #[msg("Already approved")]
     AlreadyApproved,
-    #[msg("Unauthorized signer!")]
+    #[msg("Not enough approvals")]
+    NotEnoughApprovals,
+    #[msg("Already executed")]
+    AlreadyExecuted,
+    #[msg("Not an SPL proposal")]
+    NotSplProposal,
+    #[msg("Invalid mint")]
+    InvalidMint,
+    #[msg("Insufficient remaining accounts")]
+    InsufficientRemainingAccounts,
+    #[msg("not enough signers")]
+    NotEnoughSigners,
+    #[msg("unauthorized")]
     Unauthorized,
-    #[msg("No signer provided!")]
-    NoSigner,
-    #[msg("Invalid threshold!")]
-    InvalidThreshold,
-    #[msg("Invalid signer index!")]
-    InvalidSignerIndex,
+    #[msg("Proposal already executed")]
+    ProposalAlreadyExecuted,
+    #[msg("Not SPL payment")]
+    NotSplPayment,
+    #[msg("Not enough approval")]
+    NotEnoughApproval,
+    #[msg("Accounts are invalid")]
+    InvalidAccounts,
+    #[msg("Mint Pubkey is required")]
+    MintRequired,
+    #[msg("Invalid depositor")]
+    InvalidDepositor,
+    #[msg("Invalid Amount")]
+    InvalidAmount,
+    #[msg("Invalid InvalidProgram")]
+    InvalidProgram,
+    #[msg("Invalid vault")]
+    InvalidVault,
+    #[msg("Invalid Receiver")]
+    InvalidReceiver,
 }

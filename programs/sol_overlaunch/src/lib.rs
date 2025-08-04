@@ -5,7 +5,7 @@ pub mod state;
 
 pub use instructions::*;
 pub use state::*;
-declare_id!("8BxFXbfwnVWafHev8SBgzdipFXTxieFuaWmBqYgjVDee");
+declare_id!("5zws23e8bohUwsmmGRR6AeXoGjXSyx2RPxNGCHVU1QpB");
 
 #[program]
 pub mod sol_overlaunch {
@@ -14,6 +14,9 @@ pub mod sol_overlaunch {
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let state = &mut ctx.accounts.global_state;
+        if state.owner != Pubkey::default() {
+            return Err(ProgramError::AccountAlreadyInitialized.into());
+        }
         state.owner = *ctx.accounts.initializer.key;
         Ok(())
     }
@@ -41,42 +44,48 @@ pub mod sol_overlaunch {
 
         Ok(())
     }
-    pub fn create_multisig(
-        ctx: Context<CreateMultisig>,
+    pub fn create_proposal(
+        ctx: Context<CreateProposal>,
         signers: Vec<Pubkey>,
         threshold: u8,
         office_id: String,
     ) -> Result<()> {
-        instructions::create_multisig::CreateMultisig::handler(ctx, signers, threshold, office_id)
+        instructions::create_proposal::CreateProposal::handler(ctx, signers, threshold, office_id)
     }
     pub fn deposit_spl(ctx: Context<DepositSpl>, amount: u64) -> Result<()> {
         instructions::deposit_spl::deposit_spl_handler(ctx, amount)
     }
 
-    pub fn deposit_sol(ctx: Context<DepositSol>, amount: u64) -> Result<()> {
-        instructions::deposit_sol::DepositSol::handler(ctx, amount)
-    }
-
     pub fn propose_payment(
         ctx: Context<ProposePayment>,
-        to: Pubkey,
-        amount: u64,
-        is_spl: bool,
-        mint: Option<Pubkey>,
+        recipients: Vec<Recipient>,
+        mint: Pubkey,
         nonce: u64,
     ) -> Result<()> {
-        instructions::propose_payment::ProposePayment::handler(ctx, to, amount, is_spl, mint, nonce)
+        instructions::propose_payment::ProposePayment::handler(ctx, recipients, mint, nonce)
     }
 
-    pub fn approve_payment(ctx: Context<ApprovePayment>, signer_index: u8) -> Result<()> {
-        instructions::approve_payment::ApprovePayment::handler(ctx, signer_index)
+    pub fn approve_payment(ctx: Context<ApprovePayment>) -> Result<()> {
+        instructions::approve_payment::ApprovePayment::handler(ctx)
     }
 
-    pub fn execute_sol_payment(ctx: Context<ExecuteSolPayment>) -> Result<()> {
-        instructions::execute_sol_payment::ExecuteSolPayment::handler(ctx)
+    pub fn execute_sol_payment(ctx: Context<ExecuteSplPayment>) -> Result<()> {
+        instructions::execute_payment::ExecuteSplPayment::handler(ctx)
     }
 
-    pub fn execute_spl_payment(ctx: Context<ExecuteSplPayment>) -> Result<()> {
-        instructions::execute_spl_payment::ExecuteSplPayment::handler(ctx)
+
+    pub fn init_spl_vault_handler(
+        ctx: Context<InitSplVault>,
+        vault_bump: u8,
+    ) -> Result<()> {
+        instructions::initial_spl_vault::init_spl_vault_handler(ctx, vault_bump)
     }
+
+    pub fn refund_spl(ctx: Context<RefundSpl>, amount: u64) -> Result<()> {
+        instructions::refund_spl_handler(ctx, amount)
+    }
+
+    // pub fn execute_spl_payment(ctx: Context<ExecuteSplPayment>) -> Result<()> {
+    //     instructions::execute_spl_payment::ExecuteSplPayment::handler(ctx)
+    // }
 }
